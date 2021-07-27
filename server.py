@@ -40,7 +40,7 @@ while True:
     stream = os.popen('hostname -I')
     ipaddr = stream.read()
     print(ipaddr)
-    doc_ref = db.collection(u'room1').document(u'stats')
+    doc_ref = db.collection(u'rooms').document(u'my-room')
     doc_ref.set({
         u'temp': read_temp(),
         u'ip': ipaddr,
