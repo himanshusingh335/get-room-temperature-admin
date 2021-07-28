@@ -40,13 +40,18 @@ def send_to_token():
         response = messaging.send_multicast(message)
     except Exception as error:
         print(f'Something went wrong: {error}')
+        return False
     else:
         print('Successfully sent message:', response)
+        return True
 
 
 while True:
     i = GPIO.input(8)
     if i == 1:  # When output from motion sensor is HIGH
         print("movement detected")
-        send_to_token()
+        f = send_to_token()
+        while(f == False):
+            f = send_to_token()
+            time.sleep(2)
         time.sleep(120)
