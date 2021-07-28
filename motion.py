@@ -26,7 +26,7 @@ def get_token():
 
 
 def send_to_token():
-    multicast_message = messaging.MulticastMessage(
+    message = messaging.MulticastMessage(
         notification=messaging.Notification(
             title="MY ROOM",
             body="Motion detected in your room"
@@ -36,8 +36,12 @@ def send_to_token():
             priority="high"
         ),
     )
-    response = messaging.send_multicast(multicast_message)
-    print('Successfully sent message:', response)
+    try:
+        response = messaging.send_multicast(message)
+    except Exception as error:
+        print(f'Something went wrong: {error}')
+    else:
+        print('Successfully sent message:', response)
 
 
 while True:
