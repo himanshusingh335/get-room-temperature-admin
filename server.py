@@ -24,14 +24,19 @@ def read_temp_raw():
 
 
 def read_temp():
-    lines = read_temp_raw()
-    while lines[0].strip()[-3:] != 'YES':
-        time.sleep(0.2)
+    try:
         lines = read_temp_raw()
-    equals_pos = lines[1].find('t=')
-    if equals_pos != -1:
-        temp_string = lines[1][equals_pos+2:]
-        temp_c = str((float(temp_string) / 1000.0))+" C"
+        while lines[0].strip()[-3:] != 'YES':
+            time.sleep(0.2)
+            lines = read_temp_raw()
+        equals_pos = lines[1].find('t=')
+        if equals_pos != -1:
+            temp_string = lines[1][equals_pos+2:]
+            temp_c = str((float(temp_string) / 1000.0))+" C"
+    except Exception as error:
+        print(f'Something went wrong: {error}')
+        return "error"
+    else:
         return temp_c
 
 
@@ -40,9 +45,12 @@ while True:
     stream = os.popen('hostname -I')
     ipaddr = stream.read()
     print(ipaddr)
-    doc_ref = db.collection(u'rooms').document(u'my-room')
-    doc_ref.set({
-        u'temp': read_temp(),
-        u'ip': ipaddr,
-    })
+    try:
+        doc_ref = db.collection(u'rooms').document(u'my-room')
+        doc_ref.set({
+            u'temp': read_temp(),
+            u'ip': ipaddr,
+        })
+    except Exception as error:
+        print(f'Something went wrong: {error}')
     time.sleep(120)
